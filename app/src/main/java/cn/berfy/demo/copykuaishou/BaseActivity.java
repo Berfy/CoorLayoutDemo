@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import butterknife.ButterKnife;
+
 /**
  * Created by Berfy on 2017/9/12.
  */
@@ -26,6 +28,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
             view = View.inflate(mContext, getLayoutId(), null);
         }
         setContentView(view);
+        ButterKnife.bind(this);
         initView();
     }
 

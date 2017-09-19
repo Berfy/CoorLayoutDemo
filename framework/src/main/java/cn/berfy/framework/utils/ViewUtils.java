@@ -14,7 +14,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
+import java.lang.reflect.Field;
+
 import cn.berfy.framework.support.badgeview.BadgeView;
+
+import static com.android.volley.VolleyLog.TAG;
 
 /**
  * 一些测量view的方法
@@ -275,5 +279,38 @@ public class ViewUtils {
         } while (null != view);
         LogUtil.e("未发现Framelayout", "aaa");
         return null;
+    }
+
+    public static int getStatusBarHeight(Context context) {
+        int height = 0;
+        try {
+            Rect frame = new Rect();
+            ((Activity) context).getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
+            height = frame.top;
+            if (height > 0) {
+                LogUtil.e(TAG, "状态栏高度" + height);
+            } else {
+                Class<?> c = null;
+                Object obj = null;
+                Field field = null;
+                int x = 0, sbar = 38;//默认为38，貌似大部分是这样的
+                height = sbar;
+                try {
+                    c = Class.forName("com.android.internal.R$dimen");
+                    obj = c.newInstance();
+                    field = c.getField("status_bar_height");
+                    x = Integer.parseInt(field.get(obj).toString());
+                    height = context.getResources().getDimensionPixelSize(x);
+                    LogUtil.e(TAG, "状态栏高度1" + height);
+
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        LogUtil.e(TAG, "状态栏高度2" + height);
+        return height;
     }
 }
